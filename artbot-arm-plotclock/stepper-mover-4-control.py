@@ -2,6 +2,10 @@
 # from raspberrypi-spy.co.uk
 # and a reference for curses
 
+# joadavis 16Dec2015
+
+# Inspired by http://www.thingiverse.com/thing:248009
+
 import sys
 import time
 import RPi.GPIO as GPIO
