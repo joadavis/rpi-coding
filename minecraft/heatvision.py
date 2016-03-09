@@ -20,23 +20,5 @@ mc.postToChat(pos)
 
 # those dont work on Pi
 
-
-
-# activate any tnt around
-
-mc.postToChat("Oliver's boom!")
-
-while True:
-
-    x,y,z = mc.player.getPos()
-
-    for xi in range(-4, 4):
-        for zi in range (-4, 4):
-            for yi in range (-1, 3):
-                thisblock = mc.getBlock(x + xi, y + yi, z + zi)
-                #print thisblock
-                if thisblock == 46:
-                    mc.setBlock(x + xi, y + yi, z+zi, 46, 1)
-                    print "setting on"
-                #mc.setBlock(x + xi, y + 1, z+zi, 46, 1)
-    time.sleep(1)
+## Unfortunately, while this was a fun idea it didn't work
+## with the version of Minecraft on the Pi in 2015
