@@ -1,16 +1,18 @@
 # based on various examples from http://programarcadegames.com/python_examples
 
+# TODO: might be fun to reskin for piggy banks that need feeding. Or plants and fertilizer?
+
 import pygame
 import random
 
 # Define some color constants
 BACK_GREEN = (0,55,0)
 BACK_GREEN_LINES = (16, 80, 16)
+GEM_DIAM = (240, 240, 240)
 GEM_RUBY = (125, 16, 16)
 GEM_SAPH = (16, 16, 180)
-GEM_ONIX = (16, 16, 16)
-GEM_DIAM = (240, 240, 240)
 GEM_EMER = (16, 125, 16)
+GEM_ONIX = (16, 16, 16)
 TOKEN = (240, 216, 16)
 TOKEN2 = (216, 200, 8)
 GEM_WILD = TOKEN2
@@ -18,6 +20,8 @@ NOBLE_BACK = (216, 200, 125)
 WHITE = (255, 255, 255)
 black = (0, 0, 0)
 green = (0, 255, 0)
+# define arbitrary color order with wild (gold) last
+GEM_ORDER=[GEM_DIAM, GEM_RUBY, GEM_SAPH, GEM_EMER, GEM_ONIX, GEM_WILD]
 
 # This sets the WIDTH and HEIGHT of each grid location
 WIDTH = 20
@@ -25,6 +29,7 @@ HEIGHT = 20
  
 # This sets the margin between each cell
 MARGIN = 5
+
 
 
 # draw grid lines
@@ -51,18 +56,19 @@ class Token_Bank(object):
         draw_gem(screen, self.color, x+9, y+5)
 
 
-def pick_two(max=3):
+def pick_two(max=4):
     """ pick a number from 0 to max inclusive, then pick another number from 0 to max inclusive
         default from 0 to 4
+        returns tuple with smallest number first
     """
-    num1 = random.randint(0, max)
-    num2 = random.randint(0, max)
+    num1 = random.randint(0, max-1)  # why -1?  to leave room for the second number
+    num2 = random.randint(0, max-1)
     print(num1, " ", num2)
     if num2 >= num1:
-        num2 = num2 + 1
+        num2 = num2 + 1 # add back in the -1 if second number is after first
         return (num1, num2)
     else:
-        return (num2, num1)
+        return (num2, num1) # put the smaller number first
 
 
 class Noble_Card(object):
@@ -71,29 +77,38 @@ class Noble_Card(object):
     x = 1
     y = 1
     
-    def __init__(self, x, y, wants):
-        self.wants = wants
+    def __init__(self, x, y, wants = []):
+        #self.wants = wants
         self.x = x
         self.y = y
-        num1, num2 = pick_two()
-        if random.randint(0,1):
-            # two 4s
-            wants = [0,0,0,0,0]
-            wants[num1] = 4
-            wants[num2] = 4
+        if wants == []:
+            num1, num2 = pick_two()
+            if random.randint(0,1):
+                # two 4s
+                self.wants = [0,0,0,0,0]
+                self.wants[num1] = 4
+                self.wants[num2] = 4
+            else:
+                # three 3s
+                self.wants = [3,3,3,3,3]
+                self.wants[num1] = 0
+                self.wants[num2] = 0
         else:
-            # three 3s
-            wants = [3,3,3,3,3]
-            wants[num1] = 0
-            wants[num2] = 0
-        print(wants)
+            self.wants = wants
+        print(self.wants)
         
     def draw(self, screen):
         # upper left corner x and y then width and height (downward)
-        pygame.draw.rect(screen, NOBLE_BACK, [self.x, self.y, 40, 40])
+        pygame.draw.rect(screen, NOBLE_BACK, [self.x, self.y, 50, 50])
         # TODO: print wants > 0
-        # TODO: print vicotry point value (all the same, but good reminder)
-        draw_gem_small(screen, GEM_DIAM, self.x + 2, self.y + 2)
+        # TODO: print victory point value (all the same, but good reminder)
+        line_offset = 2
+        for gem in range(len(self.wants)):
+            if self.wants[gem] > 0:
+                draw_gem_small(screen, GEM_ORDER[gem], self.x + 2, self.y + line_offset)
+                text = font.render(str(self.wants[gem]), True, WHITE)
+                screen.blit(text, [self.x + 12, self.y + line_offset - 2])
+                line_offset = line_offset + 12
 
 
 
@@ -106,6 +121,8 @@ screen = pygame.display.set_mode(size)
  
 pygame.display.set_caption("Splendiferous")
 
+font = pygame.font.Font(None, 18)
+
 # setup token buttons
 diam_token = Token_Bank(GEM_DIAM)
 emer_token = Token_Bank(GEM_EMER)
@@ -115,7 +132,9 @@ saph_token = Token_Bank(GEM_SAPH)
 wild_token = Token_Bank(GEM_WILD)
 tokens = [diam_token, emer_token, ruby_token, onix_token, saph_token, wild_token]
 
-test_noble = Noble_Card(100, 200, [0,0,3,3,3])
+#test_noble = Noble_Card(100, 10, [0,0,3,3,3])
+#test_noble2 = Noble_Card(180, 10)
+nobles = [Noble_Card(100, 10), Noble_Card(180, 10), Noble_Card(260, 10)]
 
 # Loop until the user clicks the close button.
 done = False
@@ -185,7 +204,10 @@ while not done:
     draw_gem(screen, GEM_DIAM, x, y)
     draw_gem(screen, GEM_EMER, x+1, y+1)
 
-    test_noble.draw(screen)
+    #test_noble.draw(screen)
+    #test_noble2.draw(screen)
+    for noble in nobles:
+        noble.draw(screen)
  
     # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
  
