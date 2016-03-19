@@ -17,6 +17,7 @@ TOKEN = (240, 216, 16)
 TOKEN2 = (216, 200, 8)
 GEM_WILD = TOKEN2
 NOBLE_BACK = (216, 200, 125)
+MINE_BACK = (190, 125, 0)
 WHITE = (255, 255, 255)
 black = (0, 0, 0)
 green = (0, 255, 0)
@@ -54,6 +55,24 @@ class Token_Bank(object):
         pygame.draw.circle(screen, TOKEN2, [x+20, y+20], 22)
         pygame.draw.circle(screen, TOKEN, [x+20, y+20], 20)
         draw_gem(screen, self.color, x+9, y+5)
+
+
+class Mine(object):
+    victory_point_value = 0
+    color = GEM_DIAM
+    costs = [7,7,7,7,7]
+    x = 1
+    y = 1
+    def __init__(self, color, vp, costs, x, y):
+        self.color = color
+        self.victory_point_value = vp
+        self.costs = costs
+        self.x = x
+        self.y = y
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.color, [self.x, self.y, 60, 15])
+        pygame.draw.rect(screen, MINE_BACK, [self.x, self.y + 15, 60, 45])
 
 
 def pick_two(max=4):
@@ -109,7 +128,8 @@ class Noble_Card(object):
                 text = font.render(str(self.wants[gem]), True, WHITE)
                 screen.blit(text, [self.x + 12, self.y + line_offset - 2])
                 line_offset = line_offset + 12
-
+        text = font.render("+" + str(self.victory_point_value), True, WHITE)
+        screen.blit(text, [self.x + 30, self.y + 30])
 
 
 # Setup
@@ -135,6 +155,9 @@ tokens = [diam_token, emer_token, ruby_token, onix_token, saph_token, wild_token
 #test_noble = Noble_Card(100, 10, [0,0,3,3,3])
 #test_noble2 = Noble_Card(180, 10)
 nobles = [Noble_Card(100, 10), Noble_Card(180, 10), Noble_Card(260, 10)]
+
+test_mine = Mine(GEM_RUBY, 1, [0, 0, 2, 4, 0], 200, 200)
+test_mine2 = Mine(GEM_SAPH, 4, [0, 0, 2, 4, 0], 300, 200)
 
 # Loop until the user clicks the close button.
 done = False
@@ -191,7 +214,7 @@ while not done:
     offset = 0
     for token in tokens:
         offset = offset + 50
-        token.draw(screen, 10 + offset, 80)
+        token.draw(screen, 10 + offset, 380)
 
     #pygame.draw.line(screen, green, [0, 0], [50, 30], 5)
  
@@ -208,6 +231,9 @@ while not done:
     #test_noble2.draw(screen)
     for noble in nobles:
         noble.draw(screen)
+
+    test_mine.draw(screen)
+    test_mine2.draw(screen)
  
     # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
  
