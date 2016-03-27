@@ -1,0 +1,51 @@
+Design Notes for Splendiferous
+
+joadavis 3/26/2016
+
+I had started building this as a one file script, but then started adding classes and it got sloppy.
+And I got annoyed when I had to add import statements and give . references to everything.
+
+So I thought I better step back and think a little more about design.
+
+
+Main object - Gamesession
+This represents each play of the game
+initialized with the number of players, and resets the player scores, bank, mine cards, and generates x number of new noble cards
+Game is over when the winning player reaches 15 victory points
+
+
+token
+represent a gem with one of the 5 gem types, or a wild gold token
+owned by the bank or one of the players
+
+mine card
+come in 3 ranks, each with a different value
+each has a cost in various gems
+each provides a gem in value for the player to use
+each may also be worth 0 or more victory points
+
+Noble card
+each has a value in gems that they are wanting
+the want is either 4 of two gems or 3 of 3 gems
+each noble card is worth 3 victory points
+there are a few nobles per game session, defined by the number of players
+- for 2 players there are 3 nobles
+each noble is either positioned at the top of the board (owned by bank)
+ or visits (owned by) a player
+
+Player
+either a human or a computer
+has tokens, mines and nobles
+has a hand of mine cards
+keeps a score, and can be queried to determine if it has won
+takes a turn
+- could make the turn method return the current victory points
+- may attract one noble (at start or end of turn?)
+- takes one of the following actions if allowed
+-- takes 3 different gems
+-- takes 2 gems of the same type if 4 or more in bank
+-- takes a mine card into hand and takes a wild token
+-- buys/builds a mine from board or hand into play
+victory points totaled from nobles and mines in play
+
+Most objects will need a draw method to trigger it rendering per refresh cycle
