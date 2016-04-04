@@ -1,7 +1,7 @@
 import pygame
 import random
 
-import splendconstants
+import splendconstants as ants
 
 
 def draw_gem(screen, color, x, y):
@@ -14,19 +14,19 @@ def draw_gem_small(screen, color, x, y):
     pygame.draw.polygon(screen, color, [[x+3, y], [x, y+3], [x, y+6], [x+3, y+9], [x+6, y+6], [x+6, y+3]])
 
 class Token_Bank(object):
-    color = splendconstants.GEM_DIAM
+    color = ants.GEM_DIAM
     def __init__(self, color):
         self.color = color
 
     def draw(self, screen, x, y):
-        pygame.draw.circle(screen, splendconstants.TOKEN2, [x+20, y+20], 22)
-        pygame.draw.circle(screen, splendconstants.TOKEN, [x+20, y+20], 20)
+        pygame.draw.circle(screen, ants.TOKEN2, [x+20, y+20], 22)
+        pygame.draw.circle(screen, ants.TOKEN, [x+20, y+20], 20)
         draw_gem(screen, self.color, x+9, y+5)
 
 
 class Mine(object):
     victory_point_value = 0
-    color = splendconstants.GEM_DIAM
+    color = ants.GEM_DIAM
     costs = [7,7,7,7,7]
     x = 1
     y = 1
@@ -39,10 +39,11 @@ class Mine(object):
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, [self.x, self.y, 60, 15])
-        pygame.draw.rect(screen, splendconstants.MINE_BACK, [self.x, self.y + 15, 60, 45])
+        pygame.draw.rect(screen, ants.MINE_BACK, [self.x, self.y + 15, 60, 45])
         draw_gem(screen, self.color, self.x +5, self.y+20)
         if self.victory_point_value > 0:
-            text = font.render("+" + str(self.victory_point_value), True, splendconstants.WHITE)
+            text = font.render("+" + str(self.victory_point_value),
+                               True, ants.WHITE)
             screen.blit(text, [self.x + 45, self.y + 3])
 
 
@@ -89,15 +90,16 @@ class Noble_Card(object):
         
     def draw(self, screen):
         # upper left corner x and y then width and height (downward)
-        pygame.draw.rect(screen, splendconstants.NOBLE_BACK, [self.x, self.y, 50, 50])
+        pygame.draw.rect(screen, ants.NOBLE_BACK, [self.x, self.y, 50, 50])
         # TODO: print wants > 0
         # TODO: print victory point value (all the same, but good reminder)
         line_offset = 2
         for gem in range(len(self.wants)):
             if self.wants[gem] > 0:
-                draw_gem_small(screen, splendconstants.GEM_ORDER[gem], self.x + 2, self.y + line_offset)
-                text = font.render(str(self.wants[gem]), True, splendconstants.WHITE)
+                draw_gem_small(screen, ants.GEM_ORDER[gem], self.x + 2, self.y + line_offset)
+                text = font.render(str(self.wants[gem]), True, ants.WHITE)
                 screen.blit(text, [self.x + 12, self.y + line_offset - 2])
                 line_offset = line_offset + 12
-        text = font.render("+" + str(self.victory_point_value), True, splendconstants.WHITE)
+        text = font.render("+" + str(self.victory_point_value),
+                           True, ants.WHITE)
         screen.blit(text, [self.x + 30, self.y + 30])

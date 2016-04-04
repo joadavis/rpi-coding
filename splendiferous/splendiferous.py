@@ -95,10 +95,10 @@ while not done:
     
     # First, clear the screen to white. Don't put other drawing commands
     # above this, or they will be erased with this command.
-    screen.fill(BACK_GREEN)
+    screen.fill(ants.BACK_GREEN)
     for row in range(20):
         for column in range(20):
-            color = BACK_GREEN_LINES
+            color = ants.BACK_GREEN_LINES
             #if grid[row][column] == 1:
             #    color = GREEN
             pygame.draw.rect(screen,
@@ -121,8 +121,8 @@ while not done:
  
     #pygame.draw.aaline(screen, green, [0, 50], [50, 80], True)
 
-    draw_gem(screen, GEM_DIAM, x, y)
-    draw_gem(screen, GEM_EMER, x+1, y+1)
+    draw_gem(screen, ants.GEM_DIAM, x, y)
+    draw_gem(screen, ants.GEM_EMER, x+1, y+1)
 
     #test_noble.draw(screen)
     #test_noble2.draw(screen)

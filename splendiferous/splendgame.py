@@ -7,7 +7,7 @@ import random
 
 # import splendiferous
 import splendcards
-import splendconstants
+import splendconstants as ants
 
 class GameSession(object):
     players = []
