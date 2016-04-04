@@ -49,3 +49,10 @@ takes a turn
 victory points totaled from nobles and mines in play
 
 Most objects will need a draw method to trigger it rendering per refresh cycle
+
+Need the main flow to handle mouse clicks and determine which object is clicked
+Not sure how to handle player turns.  Need to decide what the player wants to do
+then place move tokens on the space they click.  Give a 'are you sure' dialog.
+
+should it allow the player to take less than 3 even if 3 is possible, or even pass a turn?
+might have to if the player has a full hand and the bank is empty.
