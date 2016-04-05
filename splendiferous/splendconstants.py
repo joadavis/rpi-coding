@@ -1,5 +1,7 @@
 # define some constant values to share between the modules
 
+import pygame
+
 # Define some color constants
 BACK_GREEN = (0,55,0)
 BACK_GREEN_LINES = (16, 80, 16)
@@ -18,3 +20,5 @@ black = (0, 0, 0)
 green = (0, 255, 0)
 # define arbitrary color order with wild (gold) last
 GEM_ORDER=[GEM_DIAM, GEM_RUBY, GEM_SAPH, GEM_EMER, GEM_ONIX, GEM_WILD]
+
+font = pygame.font.Font(None, 18)

@@ -6,8 +6,8 @@ import pygame
 import random
 
 import splendgame
-import splendcards
-import splendconstants
+import splendcards as ards
+import splendconstants as ants
 
 # This sets the WIDTH and HEIGHT of each grid location
 WIDTH = 20
@@ -36,23 +36,26 @@ screen = pygame.display.set_mode(size)
  
 pygame.display.set_caption("Splendiferous")
 
-font = pygame.font.Font(None, 18)
+# try defining this in constants
+#font = pygame.font.Font(None, 18)
 
 # setup token buttons
-diam_token = Token_Bank(GEM_DIAM)
-emer_token = Token_Bank(GEM_EMER)
-ruby_token = Token_Bank(GEM_RUBY)
-onix_token = Token_Bank(GEM_ONIX)
-saph_token = Token_Bank(GEM_SAPH)
-wild_token = Token_Bank(GEM_WILD)
+diam_token = ards.Token_Bank(ants.GEM_DIAM)
+emer_token = ards.Token_Bank(ants.GEM_EMER)
+ruby_token = ards.Token_Bank(ants.GEM_RUBY)
+onix_token = ards.Token_Bank(ants.GEM_ONIX)
+saph_token = ards.Token_Bank(ants.GEM_SAPH)
+wild_token = ards.Token_Bank(ants.GEM_WILD)
 tokens = [diam_token, emer_token, ruby_token, onix_token, saph_token, wild_token]
 
 #test_noble = Noble_Card(100, 10, [0,0,3,3,3])
 #test_noble2 = Noble_Card(180, 10)
-nobles = [Noble_Card(100, 10), Noble_Card(180, 10), Noble_Card(260, 10)]
+nobles = [ards.Noble_Card(100, 10),
+          ards.Noble_Card(180, 10),
+          ards.Noble_Card(260, 10)]
 
-test_mine = Mine(GEM_RUBY, 1, [0, 0, 2, 4, 0], 200, 200)
-test_mine2 = Mine(GEM_SAPH, 4, [0, 0, 2, 4, 0], 300, 200)
+test_mine = ards.Mine(ants.GEM_RUBY, 1, [0, 0, 2, 4, 0], 200, 200)
+test_mine2 = ards.Mine(ants.GEM_SAPH, 4, [0, 0, 2, 4, 0], 300, 200)
 
 # Loop until the user clicks the close button.
 done = False
@@ -121,8 +124,8 @@ while not done:
  
     #pygame.draw.aaline(screen, green, [0, 50], [50, 80], True)
 
-    draw_gem(screen, ants.GEM_DIAM, x, y)
-    draw_gem(screen, ants.GEM_EMER, x+1, y+1)
+    #draw_gem(screen, ants.GEM_DIAM, x, y)
+    #draw_gem(screen, ants.GEM_EMER, x+1, y+1)
 
     #test_noble.draw(screen)
     #test_noble2.draw(screen)
