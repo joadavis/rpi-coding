@@ -56,3 +56,18 @@ then place move tokens on the space they click.  Give a 'are you sure' dialog.
 
 should it allow the player to take less than 3 even if 3 is possible, or even pass a turn?
 might have to if the player has a full hand and the bank is empty.
+
+
+
+
+------------------
+April 6, 2016
+Sigh again.  Having issues referencing font in different areas.
+looking around the internet, ran across this http://inventwithpython.com/blog/2010/09/01/the-top-10-pygame-tutorials/
+
+Maybe its time for another big change - use the sprite class in pygame
+http://programarcadegames.com/python_examples/f.php?file=move_sprite_mouse.py
+you can create an image in the sprite once, then use it over and over
+much better than drawing the graphics each time
+
+start with the card class.  after I smash it all together again.

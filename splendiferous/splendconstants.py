@@ -21,4 +21,3 @@ green = (0, 255, 0)
 # define arbitrary color order with wild (gold) last
 GEM_ORDER=[GEM_DIAM, GEM_RUBY, GEM_SAPH, GEM_EMER, GEM_ONIX, GEM_WILD]
 
-font = pygame.font.Font(None, 18)

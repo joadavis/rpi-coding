@@ -3,6 +3,7 @@ import random
 
 import splendconstants as ants
 
+pass # this is all unused now
 
 def draw_gem(screen, color, x, y):
     #pygame.draw.polygon(screen, color, [[x+10, y+10], [x, y+20], [x+20, y+20]], 5)

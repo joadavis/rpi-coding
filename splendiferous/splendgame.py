@@ -9,6 +9,8 @@ import random
 import splendcards
 import splendconstants as ants
 
+pass # this is unused now, all back in main class
+
 class GameSession(object):
     players = []
     bank_tokens = []
