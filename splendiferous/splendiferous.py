@@ -45,7 +45,6 @@ class GameSession(object):
     mines_deck_I = []
     mines_deck_II = []
     mines_deck_III = []
-    #mines_backs = None
     all_sprites = None
 
     def __init__(self, players):
@@ -67,11 +66,11 @@ class GameSession(object):
             print("unsupported number of players")
         # TODO generate mines for each deck
         self.mines_deck_III.add( Mine(ants.GEM_RUBY, 3, [0,0,3,7,0], 3, 10, 10) )
-
-        #self.mines_backs.add( Mine_Card_Stack(andts 1, 
         
         # collect up all sprites
         self.all_sprites.add(self.noble_gallery)
+        self.all_sprites.add(self.mines_deck_I)
+        self.all_sprites.add(self.mines_deck_II)
         self.all_sprites.add(self.mines_deck_III)
 
 
@@ -96,47 +95,21 @@ class HumanPlayer(GenericPlayer):
 
 
 
-class Token_Bank(object):
+class Token_Bank(pygame.sprite.Sprite):
     color = ants.GEM_DIAM
-    def __init__(self, color):
+    def __init__(self, color, x, y):
+        super().__init__()
         self.color = color
 
-    def draw(self, screen, x, y):
-        pygame.draw.circle(screen, ants.TOKEN2, [x+20, y+20], 22)
-        pygame.draw.circle(screen, ants.TOKEN, [x+20, y+20], 20)
-        draw_gem(screen, self.color, x+9, y+5)
-
-
-class Mine_Card_Stack(pygame.sprite.Sprite):
-    level = "I"
-    color = ants.MINE_BACK_I
-
-    def __init__(self, level, x, y):
-        super().__init__()
-        self.level = level
-        if level == 1:
-            self.color = ants.MINE_BACK_I
-            self.level = "I"
-        elif level == 2:
-            self.color = ants.MINE_BACK_II
-            self.level = "II"
-        elif level == 3:
-            self.color = ants.MINE_BACK_III
-            self.level = "III"
-
-        self.image = pygame.Surface([ants.MINE_SIZE, ants.MINE_SIZE])
-        lofont = pygame.font.Font(None, 36)
-        pygame.draw.rect(self.image, ants.MINE_BACK,
-                         [0, 0, ants.MINE_SIZE, ants.MINE_SIZE])
-        pygame.draw.polygon(self.image, self.color,
-                            [ [0, ants.MINE_SIZE], [ants.MINE_SIZE - 20, 0],
-                              [ants.MINE_SIZE, 0], [20, ants.MINESIZE] ] )
-        text = lofont.render(self.level,
-                               True, ants.WHITE)
-        screen.blit(text, [(ants.MINE_SIZE // 2) - (text.get_width() // 2),
-                           20])
+        self.image = pygame.Surface([ants.TOKEN_SIZE, ants.TOKEN_SIZE])
+        pygame.draw.circle(self.image, ants.TOKEN2, [20, 20], 22)
+        pygame.draw.circle(self.image, ants.TOKEN, [20, 20], 20)
+        draw_gem(self.image, self.color, 9, 5)
         
-            
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        
     
 
 class Mine(pygame.sprite.Sprite):
@@ -184,7 +157,7 @@ class Mine(pygame.sprite.Sprite):
             b_level = "III"
 
         self.image = pygame.Surface([ants.MINE_SIZE, ants.MINE_SIZE])
-        lofont = pygame.font.Font(None, 36)
+        lofont = pygame.font.SysFont("serif", 36)
         pygame.draw.rect(self.image, ants.MINE_BACK,
                          [0, 0, ants.MINE_SIZE, ants.MINE_SIZE])
         pygame.draw.polygon(self.image, b_color,
@@ -192,8 +165,8 @@ class Mine(pygame.sprite.Sprite):
                               [ants.MINE_SIZE, 0], [20, ants.MINE_SIZE] ] )
         b_text = lofont.render(b_level,
                                True, ants.WHITE)
-        screen.blit(b_text, [(ants.MINE_SIZE // 2) - (b_text.get_width() // 2),
-                           20])
+        self.image.blit(b_text, [(ants.MINE_SIZE // 2) - (b_text.get_width() // 2),
+                                 (ants.MINE_SIZE // 2) - (b_text.get_height() // 2)])
         
     def localdraw(self, screen):
         lofont = pygame.font.Font(None, 18)
@@ -203,7 +176,7 @@ class Mine(pygame.sprite.Sprite):
         if self.victory_point_value > 0:
             text = lofont.render("+" + str(self.victory_point_value),
                                True, ants.WHITE)
-            screen.blit(text, [45, 3])
+            self.image.blit(text, [45, 3])
 
 
 def pick_two(max=4):
@@ -297,19 +270,16 @@ pygame.display.set_caption("Splendiferous")
 afont = pygame.font.Font(None, 18)
 
 # setup token buttons
-diam_token = Token_Bank(ants.GEM_DIAM)
-emer_token = Token_Bank(ants.GEM_EMER)
-ruby_token = Token_Bank(ants.GEM_RUBY)
-onix_token = Token_Bank(ants.GEM_ONIX)
-saph_token = Token_Bank(ants.GEM_SAPH)
-wild_token = Token_Bank(ants.GEM_WILD)
+diam_token = Token_Bank(ants.GEM_DIAM, 10, 380)
+emer_token = Token_Bank(ants.GEM_EMER, 60, 380)
+ruby_token = Token_Bank(ants.GEM_RUBY, 110, 380)
+onix_token = Token_Bank(ants.GEM_ONIX, 160, 380)
+saph_token = Token_Bank(ants.GEM_SAPH, 210, 380)
+wild_token = Token_Bank(ants.GEM_WILD, 280, 380)
 tokens = [diam_token, emer_token, ruby_token, onix_token, saph_token, wild_token]
+token_group = pygame.sprite.Group()
+token_group.add(tokens)
 
-#test_noble = Noble_Card(100, 10, [0,0,3,3,3])
-#test_noble2 = Noble_Card(180, 10)
-#nobles = [Noble_Card(100, 10),
-#          Noble_Card(180, 10),
-#          Noble_Card(260, 10)]
 
 test_mine = Mine(ants.GEM_RUBY, 1, [0, 0, 2, 4, 0], 1, 200, 200)
 test_mine2 = Mine(ants.GEM_SAPH, 4, [0, 0, 2, 4, 0], 2, 300, 200)
@@ -366,13 +336,13 @@ while not done:
                              color,
                              [(MARGIN + WIDTH) * column + MARGIN,
                               (MARGIN + HEIGHT) * row + MARGIN,
-                              WIDTH,
-                              HEIGHT])
+                              WIDTH, HEIGHT])
     
-    offset = 0
-    for token in tokens:
-        offset = offset + 50
-        token.draw(screen, 10 + offset, 380)
+    #offset = 0
+    #for token in tokens:
+    #    offset = offset + 50
+    #    token.draw(screen, 10 + offset, 380)
+    token_group.draw(screen)
 
     #pygame.draw.line(screen, green, [0, 0], [50, 30], 5)
  
@@ -382,20 +352,16 @@ while not done:
  
     #pygame.draw.aaline(screen, green, [0, 50], [50, 80], True)
 
+    # mouse follow
     #draw_gem(screen, ants.GEM_DIAM, x, y)
     #draw_gem(screen, ants.GEM_EMER, x+1, y+1)
 
-    #test_noble.draw(screen)
-    #test_noble2.draw(screen)
-    #for noble in nobles:
-    #    noble.draw(screen)
+    # testin' fun
+    gamesession.mines_deck_III.sprites()[0].rect.y = gamesession.mines_deck_III.sprites()[0].rect.y + 1
+    
 
-    #for noble in gamesession.noble_gallery:
-    #    noble.draw(screen)
     gamesession.all_sprites.draw(screen)
 
-    #test_mine.draw(screen)
-    #test_mine2.draw(screen)
  
     # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
  

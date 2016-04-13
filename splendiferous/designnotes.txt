@@ -76,3 +76,18 @@ start with the card class.  after I smash it all together again.
 
 April 12, 2016
 I did start some sprite conversion. Need to read the rest of the example.
+
+mines and nobles are now sprites
+    Realized I could do a front and back of the mines in one class
+    But I'm concerned about adding all the mine sprites to the
+    gamesession groups and rendering a bunch of card backs on top of
+    each other. seems like a waste, so might create a 'deep stack'
+    group for hidden cards.
+
+need to do some cleanup now
+
+there are 3 places a mine can be. ok, 4.
+deck
+face up on tableau
+in player hand
+in player possesion (active)
