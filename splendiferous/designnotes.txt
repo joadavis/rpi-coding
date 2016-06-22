@@ -91,3 +91,55 @@ deck
 face up on tableau
 in player hand
 in player possesion (active)
+
+http://www.pygame.org/docs/ref/sprite.html
+
+Need to figure out how to handle sprites like buttons, or define regions of
+button click for different actions.
+There are other libs, like pygsear, that add button widgets on top of pygame.
+
+
+Thinking about using a button class like pygbutton from http://inventwithpython.com/blog/2012/10/30/creating-a-button-ui-module-for-pygame/
+but that doesn't inherit from the Sprite class, which seems like a miss.
+so what do I want out of a button or clickable object class?
+- could either have an area on screen for your 'actions' this turn, that you
+click and drag items (2 matching or 3 unique tokens, or a mine card) then push
+an 'I'm sure' confirmation button to end your turn.
+That would require having click and drag actions, then determining if the
+item drug in collides with the action area, then making the action happen.
+- Or, have a cursor that follows the mouse, and when collide and mousedown
+drops an icon on the item (or takes it away like a toggle).  Then have a 'done'
+button.  Would require keeping a short list of what was selected
+(a tuple of sprite and icon sprite?) and knowing how to add/remove from the list.
+
+Either case would require some validation that the selected action is legal.
+
+Thinking about the plant/vertilizer/bird reskin.  Wonder which would look nicer
+in terms of play.  The drag is likely to have a nice feel, though i'm not sure.
+if use action icons, might be good to label the icons. Or have a list of
+actions above the 'done' button (take ruby, take saph, take diamond;
+                                 buy mine for 3 and 4)
+
+
+april 23
+Thinking of the decision tree for actions
+if first click is
+- card, then enable a 'take into hand + gold" button, and a "buy now" only if
+  the player has enough
+- card stack, then enable 'take into hand + gold button
+- token, then drop a pick 1 icon and allow pick 2 and 3 iff pile counts allow
+
+hmm, gaining a noble could happen automatically, but in more competitive
+games players may choose which noble they claim so someone else can't.
+But for a casual first pass, just pick the first noble that matches and
+auto-award.
+So do a noble check at the end of each player's turn.  Incorporate earnings
+from that turn.
+
+Current state is that i can draw tokens and cards and nobles, but nothing
+is clickable yet.  Need to implement button class and do mouse collision checks.
+
+
+The button thing seems to be a question about how much expert knowledge
+the game has vs how each button has its own logic.  Ultimately the game
+needs to make the decision if a move is valid and whose turn it is.

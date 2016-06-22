@@ -1,4 +1,5 @@
 # based on various examples from http://programarcadegames.com/python_examples
+# also http://thepythongamebook.com
 
 # TODO: might be fun to reskin for piggy banks that need feeding. Or plants and fertilizer?
 
@@ -16,6 +17,8 @@ HEIGHT = 20
 # This sets the margin between each cell
 MARGIN = 5
 
+
+# some generic drawing functions --------------
 
 def draw_gem(screen, color, x, y):
     #pygame.draw.polygon(screen, color, [[x+10, y+10], [x, y+20], [x+20, y+20]], 5)
@@ -37,14 +40,22 @@ def draw_noble_icon(screen, x, y):
                           [x, y+8], [x, y] ])
 
 
+def draw_finger(screen, x, y):
+    pygame.draw.polygon(screen, ants.WHITE,
+                        [ [x,y], [x+2, y], [x+2, y+5],
+                          [x+8, y+5], [x+8, y+15],
+                          [x, y+15], [x, y] ] )
+                         
+
+# some classes --------------------------------
 
 class GameSession(object):
     players = []
     bank_tokens = []
-    noble_gallery = []
-    mines_deck_I = []
-    mines_deck_II = []
-    mines_deck_III = []
+    noble_gallery = None
+    mines_deck_I = None
+    mines_deck_II = None
+    mines_deck_III = None
     all_sprites = None
 
     def __init__(self, players):
@@ -73,11 +84,22 @@ class GameSession(object):
         self.all_sprites.add(self.mines_deck_II)
         self.all_sprites.add(self.mines_deck_III)
 
+    def generateMines(self, level):
+        """ level expressed as an int from 1 to 3 """
+        if level > 3 or level < 1:
+            # TODO throw an exception
+            return None
+        
+
 
 class GenericPlayer(object):
     name = "generic"
     score = 0
     turncount = 0
+    tokens = [0,0,0,0,0,0]
+    hand = None
+    played_sprites = None
+    played_vals = [0,0,0,0,0]
 
     def __init__(self, name):
         self.name = name
@@ -85,6 +107,25 @@ class GenericPlayer(object):
     def newGame(self):
         self.score = 0
         self.turncount = 0
+
+    def canBuy(self, wants):
+        """ Given a list of wanted tokens (wild gold will be ignored),
+            determine if the player has enough tokens.
+            return a list of what would be left or None
+            """
+        remaining_tokens = list(self.tokens)
+        for want_token in range(5):
+            if wants[want_token] > remaining_tokens[want_token]:
+                # are there enough wild gold to cover deficit?
+                deficit = wants[want_token] - remaining_tokens[want_token]
+                if remaining_tokens[5] >= deficit:
+                    remaining_tokens[5] = remaining_tokens[5] - deficit
+                    remaining_tokens[want_token] = 0
+                else:
+                    return None
+            else:
+                remaining_tokens[want_token] = remaining_tokens[want_token] - wants[want_token]
+        return remaining_tokens
 
 
 class HumanPlayer(GenericPlayer):
@@ -254,7 +295,7 @@ def draw_grid(screen, color):
 
 
 
-# Setup
+# Setup --------------------------------------
 pygame.init()
 players = [ HumanPlayer("Player 1"),
             HumanPlayer("Player 2") ]
@@ -355,6 +396,7 @@ while not done:
     # mouse follow
     #draw_gem(screen, ants.GEM_DIAM, x, y)
     #draw_gem(screen, ants.GEM_EMER, x+1, y+1)
+    draw_finger(screen, x, y)
 
     # testin' fun
     gamesession.mines_deck_III.sprites()[0].rect.y = gamesession.mines_deck_III.sprites()[0].rect.y + 1
