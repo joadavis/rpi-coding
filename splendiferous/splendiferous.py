@@ -134,6 +134,7 @@ class HumanPlayer(GenericPlayer):
         self.name = name  # TODO make this a super call
 
 
+# tODO have a surface class for the background, to make it pretty once
 
 
 class Token_Bank(pygame.sprite.Sprite):
