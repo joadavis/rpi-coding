@@ -12,6 +12,47 @@ import random
 
 COLORS_2P = ["Orange", "Brown", "Gray", "Blue", "Red"]
 
+# from http://www.gossamer-threads.com/lists/python/dev/760692
+# ANSI colors
+colours = {
+'none' : "",
+'default' : "\033[.0m",
+'bold' : "\033[.1m",
+'underline' : "\033[.4m",
+'blink' : "\033[.5m",
+'reverse' : "\033[.7m",
+'concealed' : "\033[.8m",
+
+'black' : "\033[.30m",
+'red' : "\033[.31m",
+'green' : "\033[.32m",
+'yellow' : "\033[.33m",
+'blue' : "\033[.34m",
+'magenta' : "\033[.35m",
+'cyan' : "\033[.36m",
+'white' : "\033[.37m",
+
+'on_black' : "\033[.40m",
+'on_red' : "\033[.41m",
+'on_green' : "\033[.42m",
+'on_yellow' : "\033[.43m",
+'on_blue' : "\033[.44m",
+'on_magenta' : "\033[.45m",
+'on_cyan' : "\033[46m",
+'on_white' : "\033[47m",
+
+'beep' : "\007",
+
+# non-standard attributes, supported by some terminals
+'dark' : "\033[.2m",
+'italic' : "\033[3m",
+'rapidblink' : "\033[6m",
+'strikethrough': "\033[9m",
+} 
+# end clip from website
+
+
+
 
 class Player(object):
     # a list of the colored cards, sorted by number of cards
@@ -119,6 +160,15 @@ class GameSession(object):
                 can_place.append(index)
         return can_place
 
+    def can_take(self):
+        ''' return a list of stacks that may be taken '''
+        # todo: refactor as a list comprehension?
+        takeable_stacks = []
+        for index in range(len(self.stacks)):
+            if self.stacks[index] != None and len(self.stacks[index]) > 0:
+                takeable_stacks.append(index)
+        return takeable_stacks
+
     def __str__(self):
         return "\nStack 1 {} limit {}\n" \
                "Stack 2 {} limit {}\n" \
@@ -140,31 +190,40 @@ while len(gs.deck) > 15:
     # turn loop
     for pla in gs.players:
         print(gs)
-        print("\n==========\n{}".format(pla))
+        print("\n{}=========={}\n{}".format(colours['red'], colours['default'], pla))
         pla.done_for_turn = False
         while not pla.done_for_round and not pla.done_for_turn:
+            # Determine what are valid moves for the player
             # TODO: if all stacks full, cant draw
             open_stacks = gs.can_draw_and_place()
-            # TODO: determine what are valid moves for the player
-            print("You can only take one of {} stacks.".format(open_stacks))
-            act = input("draw or take a stack number? ")
+            takeable = gs.can_take()
+            
+            if len(takeable) > 0:
+                print("You can take one of {} stacks by pressing its number.".format(takeable))
+            if len(open_stacks) > 0:
+                print("You can draw a card by pressing d.")
+            act = input("What is your choice? ")
             if act.startswith("d") and len(open_stacks) > 0:
                 card = gs.deck.pop()
-                print("Can place a card in {}.".format(open_stacks))
-                act2 = input("Card is {}. Put it where? ".format(card))
-                # TODO while to retry invalid
-                # convert to int
-                # check it was a valid choice, and stack has room
-                # place card
-                if act2.startswith("1") and 0 in open_stacks:
-                    gs.stacks[0].append(card)
-                if act2.startswith("2") and 1 in open_stacks:
-                    gs.stacks[1].append(card)
-                if act2.startswith("3") and 2 in open_stacks:
-                    gs.stacks[2].append(card)
-                else:
-                    print("invalid")
-                pla.done_for_turn = True
+                while not pla.done_for_turn:
+                    print("Can place a card in {}.".format(open_stacks))
+                    act2 = input("Card is {}. Put it where? ".format(card))
+                    
+                    # convert to int
+                    # check it was a valid choice, and stack has room
+                    # place card
+                    if act2.startswith("1") and 0 in open_stacks:
+                        gs.stacks[0].append(card)
+                        pla.done_for_turn = True
+                    if act2.startswith("2") and 1 in open_stacks:
+                        gs.stacks[1].append(card)
+                        pla.done_for_turn = True
+                    if act2.startswith("3") and 2 in open_stacks:
+                        gs.stacks[2].append(card)
+                        pla.done_for_turn = True
+                    else:
+                        print(">> Invalid choice, please try again! <<")
+                
             elif act.startswith("1") and gs.stacks[0] != None:
                 # take first stack
                 pla.take(gs.stacks[0])
@@ -184,8 +243,8 @@ while len(gs.deck) > 15:
                 pla.done_for_round = True
                 pla.done_for_turn = True
             else:
-                print("Invalid choice, try again.")
-    print("=== End of round")
+                print(">> Invalid choice, try again. <<")
+    print("=== End of round ===\n")
     #if all players done for round:  or if num stacks taken
         # dump remaining stack
         # reset done flags
@@ -199,7 +258,7 @@ while len(gs.deck) > 15:
         gs.players[0].done_for_round = False
         gs.players[1].done_for_round = False
     else:
-        print("{} {}".format(gs.players[0].name, gs.players[0].done_for_round))
+        print("{} dr = {}".format(gs.players[0].name, gs.players[0].done_for_round))
     # TODO maybe num remaining stacks <= 1 (which is total num stacks - num players)?  
 
     # test
