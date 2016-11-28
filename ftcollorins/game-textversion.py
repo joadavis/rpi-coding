@@ -51,7 +51,8 @@ colours = {
 } 
 # end clip from website
 
-
+scoring_reminder = "1 card is 1 point, 2 is 3, 6, 10, 15, 21 max."
+# alternate is 1 4 8 7 6 5
 
 
 class Player(object):
@@ -62,6 +63,7 @@ class Player(object):
     name="Player X"
     num_jokers = 0
     bonus = 0
+    score = 0
 
     def __init__(self):
         # let empty stacks exist
@@ -73,7 +75,7 @@ class Player(object):
         self.done_for_round = False
 
     def __str__(self):
-        return "--> {}\n{} and {} jokers".format(self.name, self.ordered_stacks, self.num_jokers)
+        return "--> {}\n{} and {} jokers with {} bonus".format(self.name, self.ordered_stacks, self.num_jokers, self.bonus)
 
     def take(self, stack):
         for card in stack:
@@ -101,6 +103,9 @@ class Player(object):
             print(card)
         # sort by count
         print("done take {}".format(self.ordered_stacks))
+
+    def print_score(self):
+        print("i dunno, like 0?")
 
 
 class GameSession(object):
@@ -186,7 +191,9 @@ for pla in gs.players:
     print(pla)
 
 # round loop
-while len(gs.deck) > 15:
+game_running = True
+#while len(gs.deck) > 15:
+while game_running:
     # turn loop
     for pla in gs.players:
         print(gs)
@@ -244,7 +251,7 @@ while len(gs.deck) > 15:
                 pla.done_for_turn = True
             else:
                 print(">> Invalid choice, try again. <<")
-    print("=== End of round ===\n")
+    print("=== End of turns ===\n")
     #if all players done for round:  or if num stacks taken
         # dump remaining stack
         # reset done flags
@@ -257,12 +264,26 @@ while len(gs.deck) > 15:
         gs.stacks[2] = []
         gs.players[0].done_for_round = False
         gs.players[1].done_for_round = False
-    else:
-        print("{} dr = {}".format(gs.players[0].name, gs.players[0].done_for_round))
+        # check for game end at end of round
+        if len(gs.deck) < 15:
+            game_running = False
+    #else:
+    #    print("{} dr = {}".format(gs.players[0].name, gs.players[0].done_for_round))
     # TODO maybe num remaining stacks <= 1 (which is total num stacks - num players)?  
 
     # test
     #gs.players[0].take(COLORS_2P)
 
-
+# calculate scores and winner
+winning_score = 0
+winning_player = "Its a tie!"
+for pla in gs.players:
+    pla.print_score()
+    if pla.score > winning_score:
+        winning_score = pla.score
+        winning_player = pla.name
+    elif pla.score == winning_score:
+        winning_player = "Its a tie!"
+print("With {} points the winner is... {}".format(winning_score, winning_player))
 print("\nGame is done. Hope you enjoyed it.\n")
+
