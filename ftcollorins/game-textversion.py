@@ -53,6 +53,8 @@ colours = {
 
 scoring_reminder = "1 card is 1 point, 2 is 3, 6, 10, 15, 21 max."
 # alternate is 1 4 8 7 6 5
+scoring_lookup = [0, 1, 3, 6, 10, 15, 21, 21, 21, 21] # only 9 cards of each color
+
 
 
 class Player(object):
@@ -101,11 +103,29 @@ class Player(object):
                     # create a new stack
                     self.ordered_stacks.append((card, 1))
             print(card)
-        # sort by count
+        # TODO sort by count
         print("done take {}".format(self.ordered_stacks))
 
     def print_score(self):
         print("i dunno, like 0?")
+        # this is kinda tricky - dict is not sorted
+        # thinking - get a list of all the scores for the colors, 
+        # then sort thelist, then first 3 of list + rest -
+        # ah, but what about jokers?  if just have score, how do we know what the next score in scoring is?
+        color_scores = []
+        #for color in self.
+        #but using a list of tuples, not dict
+        
+        jokers_to_use = self.num_jokers
+        if len(self.ordered_stacks) > 1:
+            st_color, st_count = self.ordered_stacks[0]
+            while jokers_to_use > 0 and st_count < 6:
+                jokers_to_use -= 1
+                st_count += 1
+            st_score = scoring_lookup[st_count]
+            color_scores.append(st_score)
+            print("{} scored {} for {} cards",format(st_color, st_score, st_count))
+        # TODO sum the color_scores then add bonus, store in self.score
 
 
 class GameSession(object):
