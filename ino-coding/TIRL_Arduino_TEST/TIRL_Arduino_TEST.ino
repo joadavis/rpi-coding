@@ -20,7 +20,7 @@ int PEN_UP = 160;   // angle of servo when pen is up
 Servo penServo;
 
 float wheel_dia=63; //    # mm (increase = spiral out)
-float wheel_base=109; //    # mm (increase = spiral in, ccw) 
+float wheel_base=118; //    # mm (increase = spiral in, ccw) orig 109
 int steps_rev=512; //        # 512 for 64x gearbox, 128 for 16x gearbox
 int delay_time=6; //         # time between steps in ms, orign 6
 
@@ -75,6 +75,8 @@ void loop(){
   Serial.println(analogValue);
 
   if (analogValue < 200) {
+    right(360);
+    delay(1000);
     // draw a calibration box 4 times - this is based on the original TIRL code
     pendown();
     for(int x=0; x<12; x++){
@@ -87,7 +89,7 @@ void loop(){
     pendown();
     
     for(int x=0; x<12; x++){
-      backward(100);
+      forward(100);
       right(90);
     }
   }
@@ -103,7 +105,7 @@ void loop(){
     write_I(letterDistance);
     write_A(letterDistance);
     write_S(letterDistance);
-    forward(200);
+    forward(100);
     write_O(letterDistance);
     write_L(letterDistance);
     write_I(letterDistance);
