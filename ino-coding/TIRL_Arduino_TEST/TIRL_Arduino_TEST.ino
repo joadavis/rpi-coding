@@ -256,6 +256,31 @@ void write_E(float distance){
   // pen down
 }
 
+void write_F(float distance){
+  // looks a lot like the E
+  pendown();
+  left(90);
+  forward(distance);
+  forward(distance);
+  right(90);
+  forward(distance);
+  // TODO: pen up around backwards
+  backward(distance);
+  left(90);
+  backward(distance);
+  right(90);
+  forward(distance * 0.8);
+  backward(distance * 0.8);
+  left(90);
+  backward(distance);
+  
+  penup();
+  right(90);
+  // kerning
+  forward(distance * 1.5);
+}
+
+
 void write_L(float distance){
   pendown();
   left(90);
@@ -355,7 +380,7 @@ void write_O(float distance){
 
 void write_V(float distance){
   // calculate a factor for a right angle triangle with side A of 2 and side B of .5
-  float magicDist = sqrt((distance * distance) + (distance * distance));
+  float magicDist = sqrt((4 * distance * distance) + (0.25 * distance * distance));
   float acuteAngle = 180 - 14;  // turn at top of V, arctan(.5/2) = 14.03624...
   float tooAcuteAngle = 180 - 14 - 14; // turn at bottom of V
 
