@@ -54,7 +54,7 @@ colours = {
 scoring_reminder = "1 card is 1 point, 2 is 3, 6, 10, 15, 21 max."
 # alternate is 1 4 8 7 6 5
 scoring_lookup = [0, 1, 3, 6, 10, 15, 21, 21, 21, 21] # only 9 cards of each color
-
+card_runout_count = 15 # can increase to shorten game in testing
 
 
 class Player(object):
@@ -77,7 +77,7 @@ class Player(object):
         self.done_for_round = False
 
     def __str__(self):
-        return "--> {}\n{} and {} jokers with {} bonus".format(self.name, self.ordered_stacks, self.num_jokers, self.bonus)
+        return "--> {}\n--> {} and {} jokers with {} bonus".format(self.name, self.ordered_stacks, self.num_jokers, self.bonus)
 
     def take(self, stack):
         for card in stack:
@@ -107,7 +107,7 @@ class Player(object):
         print("done take {}".format(self.ordered_stacks))
 
     def print_score(self):
-        print("i dunno, like 0?")
+        #print("i dunno, like 0?")
         # this is kinda tricky - dict is not sorted
         # thinking - get a list of all the scores for the colors, 
         # then sort thelist, then first 3 of list + rest -
@@ -115,17 +115,28 @@ class Player(object):
         color_scores = []
         #for color in self.
         #but using a list of tuples, not dict
-        
+
+        self.score = self.bonus # start with bonus
         jokers_to_use = self.num_jokers
         if len(self.ordered_stacks) > 1:
-            st_color, st_count = self.ordered_stacks[0]
-            while jokers_to_use > 0 and st_count < 6:
-                jokers_to_use -= 1
-                st_count += 1
-            st_score = scoring_lookup[st_count]
-            color_scores.append(st_score)
-            print("{} scored {} for {} cards",format(st_color, st_score, st_count))
-        # TODO sum the color_scores then add bonus, store in self.score
+            to_score_positive = 3
+            for stack in self.ordered_stacks:
+                #st_color, st_count = self.ordered_stacks[0]
+                st_color, st_count = stack
+                while jokers_to_use > 0 and st_count < 6:
+                    jokers_to_use -= 1
+                    st_count += 1
+                st_score = scoring_lookup[st_count]
+                color_scores.append(st_score)
+                if to_score_positive > 0:
+                    self.score = self.score + st_score
+                    print("{} scored {} for {} cards".format(st_color, st_score, st_count))
+                else:
+                    self.score = self.score - st_score
+                    print("{} scored -{} for {} cards".format(st_color, st_score, st_count))
+            to_score_positive -= 1
+        # done. sum the color_scores then add bonus, store in self.score
+        print("  TOTAL SCORE is {}".format(self.score))
 
 
 class GameSession(object):
@@ -197,7 +208,7 @@ class GameSession(object):
     def __str__(self):
         return "\nStack 1 {} limit {}\n" \
                "Stack 2 {} limit {}\n" \
-               "Stack 3 {} limit {}\n".format(
+               "Stack 3 {} limit {}".format(
                    self.stacks[0], self.stack_limit_2p[0],
                    self.stacks[1], self.stack_limit_2p[1],
                    self.stacks[2], self.stack_limit_2p[2])
@@ -217,7 +228,8 @@ while game_running:
     # turn loop
     for pla in gs.players:
         print(gs)
-        print("\n{}=========={}\n{}".format(colours['red'], colours['default'], pla))
+        #print("\n{}=========={}\n{}".format(colours['red'], colours['default'], pla))
+        print("\n==========\n{}".format( pla))
         pla.done_for_turn = False
         while not pla.done_for_round and not pla.done_for_turn:
             # Determine what are valid moves for the player
@@ -226,7 +238,9 @@ while game_running:
             takeable = gs.can_take()
             
             if len(takeable) > 0:
-                print("You can take one of {} stacks by pressing its number.".format(takeable))
+                # TODO incrrment displayed values by one
+                print("You can take one of {} stacks " \
+                      "by pressing its number.".format(takeable))
             if len(open_stacks) > 0:
                 print("You can draw a card by pressing d.")
             act = input("What is your choice? ")
@@ -271,12 +285,12 @@ while game_running:
                 pla.done_for_turn = True
             else:
                 print(">> Invalid choice, try again. <<")
-    print("=== End of turns ===\n")
+    print("=== End of player turns ===\n")
     #if all players done for round:  or if num stacks taken
         # dump remaining stack
         # reset done flags
     if gs.players[0].done_for_round and gs.players[1].done_for_round:
-        print("=== reset round")
+        print("=== reset round   ...:::::....:::::...")
         #for stack in gs.stacks:
         #    stack = []
         gs.stacks[0] = []
@@ -285,8 +299,9 @@ while game_running:
         gs.players[0].done_for_round = False
         gs.players[1].done_for_round = False
         # check for game end at end of round
-        if len(gs.deck) < 15:
+        if len(gs.deck) < card_runout_count:
             game_running = False
+            print("=== final round was triggered. time for scoring")
     #else:
     #    print("{} dr = {}".format(gs.players[0].name, gs.players[0].done_for_round))
     # TODO maybe num remaining stacks <= 1 (which is total num stacks - num players)?  
@@ -298,6 +313,7 @@ while game_running:
 winning_score = 0
 winning_player = "Its a tie!"
 for pla in gs.players:
+    print(pla.name)
     pla.print_score()
     if pla.score > winning_score:
         winning_score = pla.score
