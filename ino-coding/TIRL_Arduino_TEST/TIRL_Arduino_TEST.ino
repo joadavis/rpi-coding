@@ -22,7 +22,10 @@ Servo penServo;
 float wheel_dia=63; //    # mm (increase = spiral out)
 float wheel_base=118; //    # mm (increase = spiral in, ccw) orig 109
 int steps_rev=512; //        # 512 for 64x gearbox, 128 for 16x gearbox
-int delay_time=6; //         # time between steps in ms, orign 6
+int delay_time=60; //         # time between steps in ms, orign 6
+
+int blink_delay_time=1000;
+int ledPin=13; // most arduino have a led wired to pin 13 on board
 
 // Stepper sequence org->pink->blue->yel
 int L_stepper_pins[] = {12, 10, 9, 11};
@@ -47,7 +50,7 @@ void setup() {
   Serial.begin(9600);
 
   // initialize the LED pin as an output:
-  //pinMode(ledPin, OUTPUT);
+  pinMode(ledPin, OUTPUT);
   
   for(int pin=0; pin<4; pin++){
     pinMode(L_stepper_pins[pin], OUTPUT);
@@ -75,8 +78,14 @@ void loop(){
   Serial.println(analogValue);
 
   if (analogValue < 200) {
+    Serial.println("calibration");
     right(360);
     delay(1000);
+    penup();
+    pendown();
+    penup();
+    pendown();
+    penup();
     // draw a calibration box 4 times - this is based on the original TIRL code
     pendown();
     for(int x=0; x<12; x++){
@@ -97,7 +106,7 @@ void loop(){
   else if (analogValue < 400) {
     // preset 1
     Serial.println("preset 1 - name");
-    //blink_pin(1);
+    blink_pin(1);
     
     // try some letters, passing a unit size
     write_E(letterDistance);
@@ -116,7 +125,7 @@ void loop(){
   else if (analogValue < 600) {
     // preset 2
     Serial.println("preset 2 - wiggle");
-    //blink_pin(2);
+    blink_pin(2);
 
     for(int x=0; x<20; x++){
       forward(1);
@@ -133,11 +142,40 @@ void loop(){
     }
     
     forward(25);
+    blink_pin(2);
+  }
+  else if (analogValue < 800) {
+    Serial.println("preset 3 - banner");
+    blink_pin(3);
+    write_H(letterDistance);
+    write_A(letterDistance);
+    write_P(letterDistance);
+    write_P(letterDistance);
+    write_Y(letterDistance);
+    forward(letterDistance);
+    blink_pin(3);
+    write_B(letterDistance);
+    write_I(letterDistance);
+    write_R(letterDistance);
+    write_T(letterDistance);
+    write_H(letterDistance);
+    write_D(letterDistance);
+    write_A(letterDistance);
+    write_Y(letterDistance);
+    forward(letterDistance);
+    blink_pin(3);
+    write_S(letterDistance);
+    write_A(letterDistance);
+    write_B(letterDistance);
+    write_R(letterDistance);
+    write_I(letterDistance);
+    write_N(letterDistance);
+    write_A(letterDistance);
   }
   else {
     // preset whatever is left
     Serial.println("preset leftover");
-    //blink_pin(3);
+    blink_pin(30);
     
   }
 
@@ -230,6 +268,30 @@ void left(float degrees){
 // Letters assume you are starting at the lower left corner of the letter
 // start by pendown, end with penup
 
+void write_D(float distance){
+  // "rupie O" similar
+  float magicDist = distance * 1.41 * 0.5;
+  
+  left(90);
+  pendown();
+  forward(distance * 2);
+  right(90); // top
+  forward(distance * 0.5);
+  right(45);
+  forward(magicDist);
+  right(45);
+  forward(distance);
+  right(45);
+  forward(magicDist);
+  right(45);
+  forward(distance * 0.5); // bottom
+
+  penup();
+  // kerning
+  left(180);
+  forward(distance * 1.5);
+}
+
 void write_E(float distance){
   pendown();
   left(90);
@@ -280,6 +342,28 @@ void write_F(float distance){
   forward(distance * 1.5);
 }
 
+void write_H(float distance){
+  pendown();
+  left(90);
+  forward(distance);
+  forward(distance);
+  // TODO: pen up around backwards
+  backward(distance);
+  right(90);
+  forward(distance);
+  
+  left(90);
+  forward(distance);
+
+  backward(distance);
+  backward(distance);
+  right(90);
+  
+  // pen up
+  penup();
+  // kerning
+  forward(distance * 0.5);
+}
 
 void write_L(float distance){
   pendown();
@@ -332,6 +416,31 @@ void write_A(float distance){
   forward(distance * 0.5);
 }
 
+void write_B(float distance){
+  float legDist = distance * 1.41;
+  
+  pendown();
+  left(90);
+  forward(distance);
+  forward(distance);
+  right(90);
+  forward(distance * 0.8); // top done
+  right(90);
+  forward(distance);
+  right(90);
+  forward(distance * 0.8);
+  backward(distance);  //bottom half
+  left(90);
+  forward(distance);
+  left(90);
+  backward(distance);
+  
+  penup();
+  
+  // kerning
+  forward(distance * 1.5);
+}
+
 void write_S(float distance){
   pendown();
   forward(distance);
@@ -350,6 +459,26 @@ void write_S(float distance){
   // kerning
   penup();
   forward(distance * 0.5);
+}
+
+void write_T(float distance){
+  penup();
+  forward(distance * 0.5);
+  left(90);
+  
+  pendown();
+  forward(distance * 2.0);
+  right(90);
+  backward(distance * 0.5);
+  forward(distance);
+  
+  backward(distance * 0.5);
+  penup();
+  
+  right(90);
+  forward(distance * 2.0);
+  left(90);
+  forward(distance);
 }
 
 void write_O(float distance){
@@ -401,6 +530,52 @@ void write_V(float distance){
   forward(distance * 0.5);
 }
 
+void write_N(float distance){
+  // calculate a factor for a right angle triangle with side A of 2 and side B of .5
+  float magicDist = sqrt((4 * distance * distance) + (0.25 * distance * distance));
+  float acuteAngle = 180 - 14;  // turn at top of V, arctan(.5/2) = 14.03624...
+  float tooAcuteAngle = 180 - 14 - 14; // turn at bottom of V
+
+  pendown();
+  left(90);
+  forward(distance * 2);
+  right(acuteAngle);
+
+  forward(magicDist);
+  
+  left(acuteAngle);
+  forward(distance * 2);
+  penup();
+  backward(distance * 2);
+
+  // kerning
+  right(90);
+  forward(distance * 0.5);
+}
+
+void write_P(float distance){
+  float legDist = distance * 1.41;
+  
+  pendown();
+  left(90);
+  forward(distance);
+  forward(distance);
+  right(90);
+  forward(distance); // top done
+  right(90);
+  forward(distance);
+  right(90);
+  forward(distance);
+
+  penup();  
+  left(90 + 45);
+  forward(legDist);
+  left(45);
+  
+  // kerning
+  forward(distance * 0.5);
+}
+
 void write_R(float distance){
   float legDist = distance * 1.41;
   
@@ -424,20 +599,44 @@ void write_R(float distance){
   forward(distance * 0.5);
 }
 
+void write_Y(float distance){
+  float magicDist = distance * 1.41 * 0.5;
+  
+  penup();
+  forward(distance * 0.5);
+  left(90);
+  pendown();
+  forward(distance);
+  left(45);
+  forward(magicDist);
+  backward(magicDist);
+  right(90);
+  forward(magicDist);
+  backward(magicDist);
+  
+  penup();
+  left(45);
+  backward(distance);
+  right(90);
+  // kern
+  forward(distance);
+}
+
+
 // ------- END LETTERS ------------
 
-/*
+
 void blink_pin(int blks){
   // start low
   digitalWrite(ledPin, LOW);
   for(int bl_num = 0; bl_num<blks; bl_num++) {
     digitalWrite(ledPin, HIGH);
-    delay(10);
+    delay(blink_delay_time);
     digitalWrite(ledPin, LOW);
-    delay(10);
+    delay(blink_delay_time);
   }
 }
-*/
+
 
 void done(){ // unlock stepper to save battery
   for(int mask=0; mask<4; mask++){
