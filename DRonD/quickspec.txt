@@ -1,0 +1,47 @@
+The Dreaded Race on Deimos
+joadavis Feb 2017
+
+The idea is to capture some of the fun of Robo Rally into a slightly more interactive python game.
+
+First pass will be text only to work out logic and mechanics.  This worked ok for Splendiferous.
+
+Premise:
+The countries of the world worked together in harmony to establish the
+first robotic research and production facility on Deimos, moon of Mars.
+But back on Earth, policies changed and funding ran out, so now each 
+country has decided to pull the plug on the facility.
+You are part of the remaining skeleton crew on Earth who runs what is 
+left of this once amazing technical marvel.
+So in the spirit of national pride, you challenge the other remaining 
+nations to a race.  The Dreaded Race.
+
+
+Key points of play:
+Play takes place in an automated factory on Deimos. (basic square map)
+The factory is full of obstacles and dangers - conveyer belts, lasers,
+pits, smelters, rock crushers, etc.
+Players control one robot, with a large lag.
+Players send commands to their robot, but it takes 9 cycles for each 
+command to reach execution.
+When a bot is damaged, the last command gets locked in and will repeat
+9 cycles later.
+A bot may be reset by pausing for a turn.
+Players don't see other player's next move. 
+(consider showing damage status ticker that cycles with damaged commands - 00X0000XX)
+The goal of the game is to race through a set of target spaces in order, 
+collecting a flag/marker at each, then reach the finish line first.
+Possible moves- Forward, back, turn left, turn right, fire laser.  
+Add forward 1 or 2?  Spin around?
+Do players get to pick from all possible cards, or just a drawn set each time?
+Do locked in commands mean that command is not an option?
+Each bot can take 3 hits before shutdown.  Can voluntarily shut down
+to repair.  OR just let it get locked in and roll to doom?
+
+
+Programming tasks:
+board generator - or use canned boards to start
+game class
+player class (ai and human)
+move card dealer - part of player or part of game?
+simple text output - show board with bots + dir, show other players, 
+show current command queue, show available command options
