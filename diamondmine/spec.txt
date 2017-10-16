@@ -1,0 +1,37 @@
+diamond mine card game
+joadavis sept 25 2017
+
+This is an old idea I had for a card game. I've spent many hours playing spades and hearts.
+But why isnt there a game for diamonds?
+So the idea is to have a game where diamonds are worth points and you are trying to mine them out of your hand.
+Other suits are for actions.  Need a matching spade to mine a diamond.
+Clubs are to take diamonds from other players.
+Hearts are like magic or something and help you defend or keep diamonds. something like that. That is about as as far as I got.
+
+so the idea is to write a program to help play test the concept.
+
+In thinking about it you kind of need a scoring scale.
+Ideas for scoring
+* pinocle. 1 to 5 is 5 points. 6 to 10 is 10 points. face are 15
+* value. what is on the card.
+* flatter. 5 7 9 tiers?
+
+To win: the first player to a target value. Depending on scoring it could be 15 or 24 or 50.
+Achievable but not too fast.
+
+
+First approach to clubs and  hearts is to make them only work on matches.
+  if opponent has out 4 dia and you have 4 club you can take it. but if they have a 4 heart they play it in top to defend.
+
+Another approach is to use as modifiers.  if opp has 4 dia and you have 2 club and 2 heart then you can attack
+
+Consider also letting clubs be used to steal cards from another hand, go fish style.
+
+Need to think about card cycling.  
+Rounds might not be very interesting if you cant get the cards you want.
+But it could get unbearable if you spend all your time defending endlessly.
+
+one approach. draw a card (or two) every turn. no need to discard.
+another. play whatever you want or discard. always end round with 5 cards.
+another thought. allow playing a heart for draw 2 cards.
+

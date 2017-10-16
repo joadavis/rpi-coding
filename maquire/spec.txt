@@ -1,0 +1,14 @@
+Maquire - a game of mergers and acquisitions.
+An Acquire derivative
+joadavis Oct 16 2017
+
+I've wanted to make an Acquire game for a while. I've played the board game a number of times through the years and always enjoyed it.
+Last year I got curious and found someone else's knockoff Android version.  I played it a few times until the free trial ran out and found I was beating the AI pretty often.
+
+I recently had an idea for a few variations.  If I'm writing a program, I can do a few things like these.
+* "Central Park" - There is an area in the middle of the board that is blocked out. This effectively creates more 'edge' tiles.  Optionally, there could be a bonus for building next to the park.
+* "Atlantic City" - One edge is a boardwalk and properties that touch get a bonus.  For every 2 adjacent edge tiles, bump up another value rank.
+* "Round the world" - Well, technically this would be a torus, but have the edges loop around and connect to each other. I suppose you could just do right and left connections.  This would be easier to do in a program than on a board, as you could slide the tiles around to give a better view.  Right and left might be enough - noone builds on the north or south pole.
+
+Ideally, I'd write this as a game engine that could be unit tested, a UI layer that could take the game objects and represent in pygame, and a set of AI bots.
+What would make the program more enjoyable would be careful representation of the value of each company.
