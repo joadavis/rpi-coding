@@ -107,6 +107,8 @@ class Player(object):
         print("done take {}".format(self.ordered_stacks))
 
     def print_score(self):
+        # TODO this method is printing but has a side effect of doing the calculation
+        # TODO instead, refactor to just storing the output in a score summary string
         #print("i dunno, like 0?")
         # this is kinda tricky - dict is not sorted
         # thinking - get a list of all the scores for the colors, 
@@ -134,8 +136,8 @@ class Player(object):
                 else:
                     self.score = self.score - st_score
                     print("{} scored -{} for {} cards".format(st_color, st_score, st_count))
-            to_score_positive -= 1
-        # done. sum the color_scores then add bonus, store in self.score
+                to_score_positive -= 1
+        # done. summed the color_scores and bonus, stored in self.score
         print("  TOTAL SCORE is {}".format(self.score))
 
 
@@ -175,6 +177,7 @@ class GameSession(object):
                 picked_card_2 = self.deck.pop()
             pla.take([picked_card, picked_card_2])
         self.deck = self.deck + put_back
+        random.shuffle(self.deck)  # so any special arent first picked
 
         
     def generate_deck_2p(self):
