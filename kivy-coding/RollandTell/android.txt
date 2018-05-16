@@ -1,0 +1,4 @@
+title=Roll and Tell
+author=joadavis
+orientation=landscape
+fullscreen=1

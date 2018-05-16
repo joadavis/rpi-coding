@@ -1,0 +1,4 @@
+title=Attendance Counter
+author=joadavis
+orientation=portrait
+fullscreen=1
