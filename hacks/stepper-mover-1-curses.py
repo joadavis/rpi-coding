@@ -7,7 +7,10 @@ import time
 import RPi.GPIO as GPIO
 
 import curses
+
+# set up curses
 stdscr = curses.initscr()
+#curses.noecho()
 curses.cbreak()
 stdscr.keypad(1)
 
@@ -20,21 +23,28 @@ GPIO.setmode(GPIO.BCM)
 #StepPins = [19, 16, 26, 20]
 
 # motor 2
-StepPins = [19, 6, 16, 12]
+##StepPins = [19, 6, 16, 12]
 
 # motor 1
 #StepPins = [17, 18, 22, 23]   # GPIO numbering
 #StepPins = [18, 17, 22, 23]   # GPIO numbering
 
+# lined up on left of header
+StepPins = [19, 13, 6, 5]
+
+# and on right down to last, skipping ground on phys 34
+StepPins2 = [12, 16, 20, 21]
+
 
 # set all pins as ouput
 for pin in StepPins:
-  print "Setup pins"
+  #print "Setup pins"
+  stdscr.addstr(2,2, "Setup pins " + str(pin))
   GPIO.setup(pin, GPIO.OUT)
   GPIO.output(pin, False)
 
 #define sequence for halfstepping
-Seq = [[1,0,0,1],
+HalfSeq = [[1,0,0,1],
        [1,0,0,0],
        [1,1,0,0],
        [0,1,0,0],
@@ -74,15 +84,33 @@ while key != ord('q'):
     StepDir = 1
   elif key == curses.KEY_DOWN:
     StepDir = -1
-  
-  print "counting ",
-  print StepCounter,
-  print Seq[StepCounter]
 
-  for pin in range(0,4):
+  if key == ord('h'):
+    # go to half steps
+    Seq = HalfSeq
+    #print len(HalfSeq)
+    StepCount = len(Seq)
+  elif key == ord('f'):
+    Seq = FullSeq
+    #print("full is " + str(len(Seq)))
+    StepCount = len(Seq)
+    # fewer steps in full than half, so chop down
+    if (StepCounter >= StepCount):
+      StepCounter = 0
+
+  
+  #print "counting ",
+  #print StepCounter,
+  #print Seq[StepCounter]
+  stdscr.addstr(3, 3, "counting " + str(StepCounter) + " " + str(Seq[StepCounter]))
+
+
+  # 4 pins
+  for pin in range(0, 4):
     xpin = StepPins[pin]
     if Seq[StepCounter][pin] != 0:
-      print " enable GPIO %i" % (xpin)
+      #print " enable GPIO %i" % (xpin)
+      stdscr.addstr(4 + pin, 4, "enable GPIO %i" % (xpin))
       GPIO.output(xpin, True)
     else:
       GPIO.output(xpin, False)
@@ -98,4 +126,8 @@ while key != ord('q'):
   time.sleep(WaitTime)
 
 GPIO.cleanup()
+
+# curses cleanup
+curses.nocbreak(); stdscr.keypad(0)
+#curses.echo()
 curses.endwin()
